@@ -6,12 +6,16 @@ interface Props {
   array: string[] | number[];
 }
 
+interface ArrayNode {
+  id: string;
+  val: string | number;
+  active: boolean;
+}
+
 const Arrays = ({ array }: Props) => {
   const [timerIsOn, setTimerIsOn] = useState(false);
   const [timeoutIds, setTimeoutIds] = useState<NodeJS.Timeout[]>([]);
-  const [idList, setIdList] = useState<
-    { id: string; val: string | number; active: boolean }[]
-  >([]);
+  const [idList, setIdList] = useState<ArrayNode[]>([]);
 
   useEffect(() => {
     setIdList(
@@ -21,6 +25,15 @@ const Arrays = ({ array }: Props) => {
       }),
     );
   }, []);
+
+  const reset = () => {
+    const array: ArrayNode[] = [];
+    idList.forEach((node) => {
+      const nodeCopy = { ...node, active: false };
+      array.push(nodeCopy);
+    });
+    setIdList(array);
+  };
 
   const elementList = idList.map((el) => {
     return (
@@ -61,12 +74,20 @@ const Arrays = ({ array }: Props) => {
     <div className="flex w-full flex-col border border-dashed">
       <h2 className="p-10 text-6xl text-white">Arrays</h2>
       <div className="flex w-full overflow-auto p-10">{elementList}</div>
-      <button
-        className="mx-auto my-10 rounded-full bg-slate-300 p-5"
-        onClick={traverse}
-      >
-        Traverse Array
-      </button>
+      <div className="controls flex items-center justify-center">
+        <button
+          className="mx-auto my-10 min-w-40 rounded-full bg-slate-300 p-5 active:scale-105"
+          onClick={traverse}
+        >
+          Traverse Array
+        </button>
+        <button
+          className="mx-auto my-10 min-w-40 rounded-full bg-slate-300 p-5 active:scale-105"
+          onClick={reset}
+        >
+          Reset
+        </button>
+      </div>
     </div>
   );
 };
